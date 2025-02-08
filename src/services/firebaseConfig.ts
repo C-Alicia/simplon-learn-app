@@ -8,12 +8,12 @@ import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyC8PuAxL0pCIC8FSbdi-L1V4cXqSHoym7g",
-  authDomain: "simplon-learn-b978a.firebaseapp.com",
-  projectId: "simplon-learn-b978a",
-  storageBucket: "simplon-learn-b978a.appspot.com",
-  messagingSenderId: "366490921813",
-  appId: "1:366490921813:web:51aa7c71e0f4eb239adddc"
+  apiKey: "AIzaSyCX_Z-LfB1lsuTLFqVMHMM032YInboxHi4",
+  authDomain: "simplon-learn-project.firebaseapp.com",
+  projectId: "simplon-learn-project",
+  storageBucket: "simplon-learn-project.appspot.com",
+  messagingSenderId: "9542104701",
+  appId: "1:9542104701:web:72bda5a5f0a85d9e34e314"
 };
 
 // Initialize Firebase
