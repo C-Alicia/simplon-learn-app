@@ -7,14 +7,6 @@ import { getStorage } from "firebase/storage";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCX_Z-LfB1lsuTLFqVMHMM032YInboxHi4",
-  authDomain: "simplon-learn-project.firebaseapp.com",
-  projectId: "simplon-learn-project",
-  storageBucket: "simplon-learn-project.appspot.com",
-  messagingSenderId: "9542104701",
-  appId: "1:9542104701:web:72bda5a5f0a85d9e34e314"
-};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
