@@ -1,8 +1,7 @@
 import { View, Text, FlatList } from "react-native";
 import React from "react";
 import styles from "../../../screens/HomeScreen/style";
-import CourseListItem from "../CourseListItem";
-import Course from "../../../types/course";
+import CourseListItem from "../CourseListItem"; // Assurez-vous que ce composant affiche correctement chaque cours
 import CategoryFilter from "../../Category/CategoryFilter";
 import Category from "../../../types/category";
 
@@ -17,9 +16,8 @@ export default function CourseList({ courses, categories }: Props) {
       <FlatList
         data={courses}
         renderItem={({ item }) => <CourseListItem course={item} />}
-        keyExtractor={(item) => courses.indexOf(item)}
+        keyExtractor={(item) => item.id}  // Utilisez `id` comme clé unique
         style={styles.coursesList}
-        // ListHeaderComponent={() => <CategoryFilter categories={categories}/>}
       />
     </View>
   );

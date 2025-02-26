@@ -1,54 +1,38 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import CourseList from '../../components/Course/CourseList'
-import { courses } from '../../../assets/data/data'
-import { categories } from '../../../assets/data/data'
-import HomeHeader from '../../components/Home/HomeHeader'
-import { MaterialIcons } from "@expo/vector-icons";
-import COLORS from '../../constants/colors'
-import styles from './style'
-import CourseAddModal from '../../components/Course/CourseAddModal'
+import { View, Text, FlatList, Image } from 'react-native';
+import { useEffect, useState } from 'react';
+// Assurez-vous d'importer votre config Firebase
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../services/firebaseConfig';
+import { Video } from 'expo-av';
 
-export default function MyCoursesScreen() {
-  const [modalVisible, setModalVisible] = useState(false)
+export default function CourseScreen() {
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const querySnapshot = await getDocs(collection(db, "courses"));
+      const coursesList = querySnapshot.docs.map(doc => doc.data());
+      setCourses(coursesList);
+    };
+
+    fetchCourses();
+  }, []);
 
   return (
-    <View
-    style={{flex:1}}
-    >
-      <HomeHeader title="Cours" subtitle="Parcours tes"/>
-      <View
-      style={{flexDirection: 'row',
-        width: '98%', borderWidth: 1, alignSelf: 'center'
-      }}
-      >
-        
-        <TouchableOpacity
-        style={{width: '50%', alignItems: 'center', justifyContent: 'center', padding: 10, borderRightWidth: 1 }}
-        >
-          <Text>
-            Suivis
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-        style={{width: '50%', alignItems: 'center', justifyContent: 'center'}}
-        >
-          <Text>
-            Créés
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {/* Courses List */}
-      <CourseList courses={courses} categories={categories}/>
-      {/* Bouton pour accéder au formulaire d'ajout de cours */}
-      <TouchableOpacity
-       onPress={() => setModalVisible(true)}
-      style={styles.buttonAdd}
-      >
-      <MaterialIcons name="assignment-add" size={24} color={COLORS.light} />
-      </TouchableOpacity>
-      
-      <CourseAddModal modalVisible={modalVisible} setModalVisible={setModalVisible} categories={categories}/>
+    <View>
+      <FlatList
+        data={courses}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.title}</Text>
+            <Text>{item.description}</Text>
+            <Text>{`Chapitres: ${item.chapterCount}`}</Text>
+            {item.image && <Image source={{ uri: item.image }} style={{ width: 100, height: 100 }} />}
+            {item.video && <Video source={{ uri: item.video }} style={{ width: 200, height: 200 }} />}
+          </View>
+        )}
+      />
     </View>
-  )
+  );
 }

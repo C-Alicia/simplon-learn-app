@@ -2,7 +2,6 @@ import { View, Text, Image } from "react-native";
 import React from "react";
 import MapView, { Marker } from "react-native-maps";
 import styles from "./style";
-import { schools } from "../../../assets/data/data";
 import School from "../../types/school";
 import COLORS from "../../constants/colors";
 import HomeHeader from "../../components/Home/HomeHeader";

@@ -30,7 +30,7 @@ export default function CourseAddModal({
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
   const [chapterCount, setChapterCount] = useState<string | undefined>();
-  
+
   const [image, setImage] = useState<any>(null);
   const [mimeType, setMimeType] = useState<any>(null);
 
@@ -39,197 +39,135 @@ export default function CourseAddModal({
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
-  const addCourse = async (downloadURL: string, downloadVideoURL: string) => {
-    await addDoc(collection(db, "courses"), {
-      title: title,
-      description: description,
-      chapterCount: chapterCount,
-      authorId: auth.currentUser?.uid,
-      image: downloadURL,
-      video: downloadVideoURL,
-      CreatedAt: new Date().toUTCString(),
-    })
-      .then(() => {
-        alert("Course created successfully 🎉");
-        setModalVisible(false);
-        navigation.navigate("Home");
-      })
-      .catch((err: any) => {
-        alert(err.message);
-      }); 
+  const addCourse = async (downloadURL: string | null, downloadVideoURL: string | null) => {
+    try {
+      await addDoc(collection(db, "courses"), {
+        title: title,
+        description: description,
+        chapterCount: chapterCount,
+        authorId: auth.currentUser?.uid,
+        image: downloadURL || null,  // Utilisez null si l'image est absente
+        video: downloadVideoURL || null,  // Utilisez null si la vidéo est absente
+        createdAt: new Date().toUTCString(),
+      });
+      alert("Course created successfully 🎉");
+      setModalVisible(false);
+      navigation.navigate("Home");
+    } catch (err: any) {
+      alert(err.message);
+    }
   };
 
-  const saveImage = async () => {
-    if (!image) {
-      console.log("No image selected.");
-      return;
-    }
-
-    if (!video) {
-      console.log("No video selected.");
+  const saveImageAndVideo = async () => {
+    if (!title || !description || !chapterCount) {
+      console.log("Veuillez remplir tous les champs obligatoires.");
       return;
     }
 
     try {
-      if (auth.currentUser?.uid) {
+      let downloadURL: string | null = null;
+      let downloadVideoURL: string | null = null;
+
+      if (image) {
         const storageRef = ref(
           storage,
-          `courseImages/${auth.currentUser?.uid}_${title?.replace(
-            /\s/g,
-            ""
-          )}.${image.split('.').pop()}`
+          `courseImages/${auth.currentUser?.uid}_${title?.replace(/\s/g, "")}.${image.split('.').pop()}`
         );
 
-        // Convert image URI to Blob
         const response = await fetch(image);
         const blob = await response.blob();
 
-        // Create file metadata including the content type
-        const metadata = {
-          contentType: mimeType || "image/jpeg",
-        };
+        const metadata = { contentType: mimeType || "image/jpeg" };
+        const uploadTaskSnapshot = await uploadBytes(storageRef, blob, metadata);
 
-        // Upload the file and metadata
-        const uploadTaskSnapshot = await uploadBytes(
-          storageRef,
-          blob,
-          metadata
-        );
-
-        // Get the download URL of the uploaded image
-        const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
-
+        downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
         console.log("Image uploaded successfully! URL:", downloadURL);
+      }
 
+      if (video) {
         const storageRefV = ref(
           storage,
-          `courseVideos/${auth.currentUser?.uid}_${title?.replace(
-            /\s/g,
-            ""
-          )}.${video.split('.').pop()}`
+          `courseVideos/${auth.currentUser?.uid}_${title?.replace(/\s/g, "")}.${video.split('.').pop()}`
         );
 
-        // Convert image URI to Blob
         const responseV = await fetch(video);
         const blobV = await responseV.blob();
 
-        // Create file metadata including the content type
-        const metadataV = {
-          contentType: videoMimeType || "video/quicktime",
-        };
+        const metadataV = { contentType: videoMimeType || "video/quicktime" };
+        const uploadTaskSnapshotVideo = await uploadBytes(storageRefV, blobV, metadataV);
 
-        // Upload the file and metadata
-        const uploadTaskSnapshotVideo = await uploadBytes(
-          storageRefV,
-          blobV,
-          metadataV
-        );
-
-        // Get the download URL of the uploaded image
-        const downloadVideoURL = await getDownloadURL(uploadTaskSnapshotVideo.ref);
+        downloadVideoURL = await getDownloadURL(uploadTaskSnapshotVideo.ref);
         console.log("Video uploaded successfully! URL:", downloadVideoURL);
-
-        addCourse(downloadURL, downloadVideoURL);
       }
+
+      // Appel de la fonction addCourse après le téléchargement des fichiers (si présents)
+      addCourse(downloadURL, downloadVideoURL);
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading image or video:", error);
     }
   };
 
   const createCourseAndGoHome = async () => {
-    if (title && description && chapterCount && image && video) {
-      saveImage();
-    }
+    saveImageAndVideo();
   };
 
   return (
-    
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.modalContainer}
-      >
-        
+    <Modal visible={modalVisible} animationType="slide" transparent={true} onRequestClose={() => setModalVisible(false)}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.modalContainer}>
         <View style={styles.modalContent}>
-        <ScrollView>
-          {/* Formulaire d'inscription */}
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.formContainer}>
-              <Text style={styles.title}>Créer un cours</Text>
-              <Text style={styles.label}>Titre</Text>
+          <ScrollView>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View style={styles.formContainer}>
+                <Text style={styles.title}>Créer un cours</Text>
+                <Text style={styles.label}>Titre</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setTitle}
+                  value={title}
+                  placeholder="Titre"
+                  placeholderTextColor={COLORS.light}
+                />
 
-              <TextInput
-                style={styles.input}
-                onChangeText={setTitle}
-                value={title}
-                placeholder="Titre"
-                placeholderTextColor={COLORS.light}
-              />
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setDescription}
+                  value={description}
+                  placeholder="Description"
+                  placeholderTextColor={COLORS.light}
+                  multiline
+                  numberOfLines={4}
+                  maxLength={40}
+                />
 
-              <Text style={styles.label}>Description</Text>
+                <Text style={styles.label}>Nombre de chapitres</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setChapterCount}
+                  value={chapterCount}
+                  placeholder="Nombre de chapitres"
+                  inputMode="numeric"
+                  placeholderTextColor={COLORS.light}
+                />
+                <Text style={styles.label}>Image</Text>
+                <CourseImagePicker image={image} setImage={setImage} setMimeType={setMimeType} />
+                <Text style={styles.label}>Vidéo</Text>
+                <CourseVideoPicker video={video} setVideo={setVideo} setVideoMimeType={setVideoMimeType} />
+              </View>
+            </TouchableWithoutFeedback>
 
-              <TextInput
-                style={styles.input}
-                onChangeText={setDescription}
-                value={description}
-                placeholder="description"
-                placeholderTextColor={COLORS.light}
-                multiline
-                numberOfLines={4}
-                maxLength={40}
-              />
+            <Text style={[styles.label, { marginBottom: 10 }]}>Categorie</Text>
+            <CategoryFilter categories={categories} />
 
-              <Text style={styles.label}>Nombre de chapitre</Text>
-
-              <TextInput
-                style={styles.input}
-                onChangeText={setChapterCount}
-                value={chapterCount}
-                placeholder="chapitre"
-                inputMode="numeric"
-                placeholderTextColor={COLORS.light}
-              />
-              <Text style={styles.label}>Image</Text>
-
-              <CourseImagePicker
-                image={image}
-                setImage={setImage}
-                setMimeType={setMimeType}
-              />
-
-              <Text style={styles.label}>Vidéo</Text>
-
-              <CourseVideoPicker
-                video={video}
-                setVideo={setVideo}
-                setVideoMimeType={setVideoMimeType}
-              />
-            </View>
-          </TouchableWithoutFeedback>
-
-          <Text style={[styles.label, { marginBottom: 10 }]}>Categorie</Text>
-
-          <CategoryFilter categories={categories} />
-
-          <TouchableOpacity
-            onPress={createCourseAndGoHome}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>{`Créer le cours`}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModalVisible(false)}>
-            <Text style={styles.close}>{`Fermer`}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={createCourseAndGoHome} style={styles.button}>
+              <Text style={styles.buttonText}>Créer le cours</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.close}>Fermer</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
-        
       </KeyboardAvoidingView>
     </Modal>
-   
   );
 }

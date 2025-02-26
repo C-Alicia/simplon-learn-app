@@ -1,5 +1,3 @@
-// data.ts
-
 import Category from "../../src/types/category";
 import Course from "../../src/types/course";
 import School from "../../src/types/school";
@@ -47,6 +45,7 @@ const courses: Course[] = [
     category: "1",
     usersEnrolled: ["1", "2"],
   },
+  
 ];
 
 // Dummy categories
@@ -54,6 +53,7 @@ const categories: Category[] = [
   { id: "1", name: "Programming" , icon: 'code'},
   { id: "2", name: "Web Development", icon: 'web' },
   { id: "3", name: "Mobile Development", icon: 'smartphone' },
+  { id: "4", name: "Data Science", icon: 'analytics' }
 ];
 
 const schools: School[] = [

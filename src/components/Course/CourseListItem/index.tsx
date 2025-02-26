@@ -4,16 +4,17 @@ import CourseStudentList from "../CourseStudentList";
 import styles from "../../../screens/HomeScreen/style";
 import { MaterialIcons } from "@expo/vector-icons";
 import CourseDetailsModal from "../CourseDetailsModal";
+import { users } from "../../../../assets/data/data";
 
 export default function CourseListItem({course}:any) {
   const [modalVisible, setModalVisible] = useState(false)
-
+   
   return (
     <View
       style={[styles.courseCard, { backgroundColor: "rgba(255, 0, 0, 0.05)" }]}
     >
       <View style={styles.courseCardTop}>
-        <Text style={styles.smallText}>{`Onizuka`}</Text>
+        <Text style={styles.smallText}>{users.id}</Text>
         <TouchableOpacity 
         onPress={() => setModalVisible(true)}
         style={styles.courseCardButton}>
@@ -25,6 +26,14 @@ export default function CourseListItem({course}:any) {
         <Text style={styles.courseCardTitle}>{course.title}</Text>
 
         {/* student list */}
+
+        
+
+
+
+
+
+
         <CourseStudentList />
       </View>
       <CourseDetailsModal modalVisible={modalVisible} setModalVisible={setModalVisible} course={course}/>
