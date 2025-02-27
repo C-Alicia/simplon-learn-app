@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
+// 
 import {
   API_KEY,
   AUTH_DOMAIN,
@@ -11,6 +12,7 @@ import {
   MESSAGING_SENDER_ID,
   APP_ID,
 } from "@env";
+
 
 // Firebase configuration
 const firebaseConfig = {
@@ -29,3 +31,5 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 export { auth, db, storage };
+
+// 
