@@ -45,14 +45,15 @@ const HomeScreen: React.FC = ({route}:any) => {
         <View>
           {/* HomeScreen Header */}
           <HomeHeader />
-          {/* Categories filter */}
-          <CategoryFilter categories={categories} courses={courses} />
+          
          
           {/* Top cours */}
           <HomeTopCoursesList courses={courses} /> 
 
+          
+
           {/* Courses List */}
-         {/*  <CourseList courses={courses} categories={categories} /> */}
+          <CourseList courses={courses} categories={categories} />
         </View>
       </View>
   
