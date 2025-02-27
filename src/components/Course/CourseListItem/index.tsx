@@ -14,7 +14,7 @@ export default function CourseListItem({course}:any) {
       style={[styles.courseCard, { backgroundColor: "rgba(255, 0, 0, 0.05)" }]}
     >
       <View style={styles.courseCardTop}>
-        <Text style={styles.smallText}>{users.id}</Text>
+      <Text style={styles.smallText}>{users?.id}</Text>
         <TouchableOpacity 
         onPress={() => setModalVisible(true)}
         style={styles.courseCardButton}>
