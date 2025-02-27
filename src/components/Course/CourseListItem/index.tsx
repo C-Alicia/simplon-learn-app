@@ -29,11 +29,6 @@ export default function CourseListItem({course}:any) {
 
         
 
-
-
-
-
-
         <CourseStudentList />
       </View>
       <CourseDetailsModal modalVisible={modalVisible} setModalVisible={setModalVisible} course={course}/>
