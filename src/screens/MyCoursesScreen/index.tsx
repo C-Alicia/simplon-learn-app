@@ -33,7 +33,28 @@ export default function CourseScreen() {
   return (
     <View style={{ flex: 1 }}>
       {/* En-tête de l'écran */}
-      <HomeHeader title="Cours" subtitle="Parcours tes cours" />
+      <HomeHeader title="Cours" subtitle="Parcours tes"/>
+      <View
+      style={{flexDirection: 'row',
+        width: '98%', borderWidth: 1, alignSelf: 'center'
+      }}
+      >
+        
+        <TouchableOpacity
+        style={{width: '50%', alignItems: 'center', justifyContent: 'center', padding: 10, borderRightWidth: 1 }}
+        >
+          <Text>
+            Suivis
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+        style={{width: '50%', alignItems: 'center', justifyContent: 'center'}}
+        >
+          <Text>
+            Créés
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Filtre par catégorie */}
       <CategoryFilter categories={categories} />
@@ -41,34 +62,7 @@ export default function CourseScreen() {
       {/* Liste des cours */}
       <CourseList courses={courses} categories={categories} />
 
-      {/*  */}
-      {/* Liste des cours */}
-     {/*  <FlatList
-        data={courses}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.courseItem}>
-            <Text style={styles.courseTitle}>{item.title}</Text>
-            <Text>{item.description}</Text>
-            <Text>{`Chapitres: ${item.chapterCount}`}</Text>
-            {item.image && (
-              <Image
-                source={{ uri: item.image }}
-                style={{ width: 100, height: 100 }}
-              />
-            )}
-            {item.video && (
-              <Video
-                source={{ uri: item.video }}
-                style={{ width: 200, height: 200 }}
-                useNativeControls
-              />
-            )}
-          </View>
-        )}
-      /> */}
-
-      {/* Bouton d'ajout de cours */}
+       {/* Bouton d'ajout de cours */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={styles.buttonAdd}
